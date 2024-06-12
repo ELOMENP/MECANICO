@@ -63,13 +63,6 @@
             padding: 5px;
             font-size: 18px;
         }
-        #nave {
-            position: absolute;
-            bottom: calc(100% - 530px); /* Mueve la nave hacia arriba */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1;
-        }
     </style>
 </head>
 <body class="fade-in">
@@ -78,7 +71,6 @@
         <canvas id="spaceCanvas"></canvas>
         <div id="words-container"></div>
         <input type="text" id="input-box" autofocus>
-        <img id="nave" src="nave.png" alt="Nave Espacial">
     </div>
     <div id="score">Puntuación: 0</div> <!-- Movido fuera del contenedor del juego -->
     <script src="index.js"></script>
