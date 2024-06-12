@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas del Espacio</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            position: relative; /* Para permitir el posicionamiento absoluto del puntaje */
+        }
+        #game-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            height: 95%;
+            max-height: 700px;
+            border: 2px solid white;
+            overflow: hidden;
+        }
+        #spaceCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            height: 200px;
+            left: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border: 2px solid white;
+            border-radius: 10px;
+        }
+        #words-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .word {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 20px; /* Adjusted font size for better visibility */
+        }
+        #input-box {
+            position: absolute;
+            bottom: 10px;
+            width: calc(100% - 20px);
+            left: 10px;
+            padding: 5px;
+            font-size: 18px;
+        }
+        #nave {
+            position: absolute;
+            bottom: calc(100% - 530px); /* Mueve la nave hacia arriba */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="fade-in">
+    <!-- Contenido de facil.html -->
+    <div id="game-container">
+        <canvas id="spaceCanvas"></canvas>
+        <div id="words-container"></div>
+        <input type="text" id="input-box" autofocus>
+        <img id="nave" src="nave.png" alt="Nave Espacial">
+    </div>
+    <div id="score">Puntuación: 0</div> <!-- Movido fuera del contenedor del juego -->
+    <script src="index.js"></script>
+    <script>
+         const words = ["Emociónante", "Aventura", "Impresión", "Educación", "Generador", "Generación", "Solidaridad", "Pertener", "Inteligente", "Relevancia", "Conocimiento", "Esternocleidomastoideo"];
+        let score = 0;
+
+        const gameContainer = document.getElementById('game-container');
+        const wordsContainer = document.getElementById('words-container');
+        const inputBox = document.getElementById('input-box');
+        const scoreDisplay = document.getElementById('score');
+
+        function getRandomWord() {
+            return words[Math.floor(Math.random() * words.length)];
+        }
+
+        function createWordElement(word) {
+            const wordElement = document.createElement('div');
+            wordElement.classList.add('word');
+            wordElement.innerText = word;
+            wordElement.style.left = `${Math.random() * (gameContainer.clientWidth - 100)}px`;
+            wordElement.style.top = '0px';
+            return wordElement;
+        }
+
+        function addWordToGame() {
+            const word = getRandomWord();
+            const wordElement = createWordElement(word);
+            wordsContainer.appendChild(wordElement);
+            moveWordDown(wordElement);
+        }
+
+        function moveWordDown(wordElement) {
+            let top = 0;
+            const interval = setInterval(() => {
+                top += 2;
+                wordElement.style.top = `${top}px`;
+
+                if (top > gameContainer.clientHeight - 30) {
+                    clearInterval(interval);
+                    wordsContainer.removeChild(wordElement);
+                    alert("¡Perdiste!");
+                    window.location.reload();
+                }
+            }, 50); // Increased the interval frequency for smoother movement
+        }
+
+        inputBox.addEventListener('input', () => {
+            const inputText = inputBox.value.trim().toLowerCase();
+            const wordElements = document.querySelectorAll('.word');
+            wordElements.forEach(wordElement => {
+                if (wordElement.innerText.toLowerCase() === inputText) {
+                    wordsContainer.removeChild(wordElement);
+                    inputBox.value = '';
+                    score += 10;
+                    scoreDisplay.innerText = `Puntuación: ${score}`;
+                }
+            });
+        });
+
+        setInterval(addWordToGame, 2000);
+
+    </script>
+</body>
+</html>
